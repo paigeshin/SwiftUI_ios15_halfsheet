@@ -1,6 +1,13 @@
 # SwiftUI_ios15_halfsheet
 
 ```swift
+//
+//  DraggableModalView.swift
+//  MiracleNight
+//
+//  Created by paige shin on 2023/06/12.
+//
+
 import SwiftUI
 
 extension View {
@@ -8,12 +15,12 @@ extension View {
     func halfSheet<SheetView: View>(showSheet: Binding<Bool>,
                                     @ViewBuilder sheetView: @escaping() -> SheetView,
                                     onDismiss: (() -> Void)? = nil) -> some View {
-        // why we using overlay...
+        // why we using background...
         // because it will automatically use the swift frame size only...
         return self
-            .background {
+            .background(
                 HalfSheetHelper(showSheet: showSheet, sheetView: sheetView())
-            }
+            )
     }
     
 }
@@ -53,8 +60,11 @@ struct HalfSheetHelper<SheetView: View>: UIViewControllerRepresentable {
             self.parent = parent
         }
         
-        func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
             self.parent.showSheet = false
+        }
+        
+        func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
             self.parent.onDismiss?()
         }
         
